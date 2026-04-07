@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://cion5uuq4bmxv"]
 
 [ext_resource type="Texture2D" uid="uid://bf0k4qsoxkmm0" path="res://assets/images/player/Player.png" id="1_rwm0n"]
+[ext_resource type="Script" uid="uid://blt5v41woo3ae" path="res://assets/scripts/player.gd" id="2_script"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_rwm0n"]
 atlas = ExtResource("1_rwm0n")
@@ -277,10 +278,11 @@ animations = [{
 size = Vector2(13, 8)
 
 [node name="Player" type="CharacterBody2D" unique_id=1413802782]
+script = ExtResource("2_script")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=2057629261]
 sprite_frames = SubResource("SpriteFrames_u8vuu")
-animation = &"die"
+animation = &"idle_down"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=892197776]
 position = Vector2(-0.5, 5)
