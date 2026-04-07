@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://dvimrwetk18e0"]
+
+[ext_resource type="PackedScene" uid="uid://cion5uuq4bmxv" path="res://assets/scenes/player.tscn" id="1_dyaho"]
+[ext_resource type="PackedScene" uid="uid://ddbu6sydwfrj8" path="res://assets/scenes/rock.tscn" id="2_ckblc"]
+
+[node name="Level" type="Node2D" unique_id=456164857]
+
+[node name="Player" parent="." unique_id=1413802782 instance=ExtResource("1_dyaho")]
+position = Vector2(41, 56)
+
+[node name="Rock" parent="." unique_id=1075422711 instance=ExtResource("2_ckblc")]
+position = Vector2(109, 56)
