@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://b3cw2qd3rkuv1"]
+
+[ext_resource type="Texture2D" uid="uid://by0exvebuak5e" path="res://assets/images/ores/gold.png" id="1_gold"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_gold"]
+radius = 8.0
+
+[node name="root" type="Area2D" unique_id=174479123]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=370754458]
+texture = ExtResource("1_gold")
+region_enabled = true
+region_rect = Rect2(32, 0, 16, 16)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1314798424]
+shape = SubResource("CircleShape2D_gold")

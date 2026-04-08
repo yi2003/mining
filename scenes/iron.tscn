@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://ctteugxh27fib"]
+
+[ext_resource type="Texture2D" uid="uid://b22tcguypkaln" path="res://assets/images/ores/iron.png" id="1_iron"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_iron"]
+radius = 8.0
+
+[node name="root" type="Area2D" unique_id=667582306]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=2126024025]
+texture = ExtResource("1_iron")
+region_enabled = true
+region_rect = Rect2(32, 16, 16, 16)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=105529643]
+shape = SubResource("CircleShape2D_iron")

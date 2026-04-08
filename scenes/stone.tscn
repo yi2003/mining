@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://csdmafroqj4g2"]
+
+[ext_resource type="Texture2D" uid="uid://db50alfsel2fv" path="res://assets/images/ores/stone.png" id="1_stone"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_stone"]
+radius = 8.0
+
+[node name="root" type="Area2D" unique_id=1583966301]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1778988393]
+texture = ExtResource("1_stone")
+region_enabled = true
+region_rect = Rect2(32, 0, 16, 16)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=633821400]
+shape = SubResource("CircleShape2D_stone")

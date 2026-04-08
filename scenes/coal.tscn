@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://chwie8pc8dn2g"]
+
+[ext_resource type="Texture2D" uid="uid://db50alfsel2fv" path="res://assets/images/ores/stone.png" id="1_coal"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_coal"]
+radius = 8.0
+
+[node name="root" type="Area2D" unique_id=887105285]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1284196763]
+texture = ExtResource("1_coal")
+region_enabled = true
+region_rect = Rect2(16, 48, 16, 16)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1966344675]
+shape = SubResource("CircleShape2D_coal")
