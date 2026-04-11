@@ -16,26 +16,26 @@ var rocks_spawned = 0
 var ore_drop_chance: float = 0.7  # 70% chance to spawn ore
 
 func _ready():
-	clear_all_rocks()
-	spawn_rocks(5)
-	# Set player start position based on IS_START tile
-	var player = $YSort/Player
-	var start_pos = _find_start_position()
-	if start_pos != Vector2.ZERO:
-		player.position = start_pos
+	_clear_all_rocks()
+	_spawn_rocks(5)
+	_set_player_start_position()
 	# Reorder player to be last in YSort so player renders in front when Y is equal
+	var player = $YSort/Player
 	$YSort.remove_child(player)
 	$YSort.add_child(player)
 
-func _find_start_position() -> Vector2:
-	var cells = map.get_used_cells()
-	for cell in cells:
+func _set_player_start_position():
+	var used_cells = map.get_used_cells()
+	for cell in used_cells:
 		var tile_data = map.get_cell_tile_data(cell)
 		if tile_data != null and tile_data.get_custom_data("IS_START") == true:
-			return map.map_to_local(cell)
-	return Vector2.ZERO
+			var player = $YSort/Player
+			player.position = map.map_to_local(cell)
+			print("Player starting at IS_START tile: ", cell)
+			return
+	print("No IS_START tile found, player stays at default position")
 
-func clear_all_rocks():
+func _clear_all_rocks():
 	var rocks_to_remove = []
 	for child in $YSort.get_children():
 		if child.name.begins_with("Rock"):
@@ -44,7 +44,7 @@ func clear_all_rocks():
 		rock.queue_free()
 	rocks_spawned = 0
 
-func spawn_rocks(count: int):
+func _spawn_rocks(count: int):
 	var used_cells = map.get_used_cells()
 	var shuffled_cells = Array(used_cells)
 	shuffled_cells.shuffle()
