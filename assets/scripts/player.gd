@@ -14,20 +14,20 @@ var original_hitbox_pos = Vector2(5, -1)
 var original_shape_pos = Vector2(4.5, 5)
 
 func _ready():
-	# Start with idle animation
 	animated_sprite.play("idle_down")
-	# Enable input processing for CharacterBody2D
 	set_process_input(true)
 
 func _unhandled_input(event):
-	# Handle axe swing on Space/attack press
 	if event.is_action_pressed("attack") and not is_axe_swinging:
-		print("Attack pressed! Facing: ", facing_direction)
 		is_axe_swinging = true
 		_play_axe_animation()
 
 func _play_axe_animation():
-	print("Playing axe animation for: ", facing_direction)
+	# Check for overlapping bodies and deal damage
+	var bodies = hitbox.get_overlapping_bodies()
+	for body in bodies:
+		if body.has_method("take_damage"):
+			body.take_damage()
 	match facing_direction:
 		"up":
 			animated_sprite.play("axe_up")
@@ -58,7 +58,6 @@ func _play_axe_animation():
 
 	# Wait for animation to finish before allowing another swing
 	await animated_sprite.animation_finished
-	print("Axe animation finished")
 	# Reset hitbox
 	hitbox.position = original_hitbox_pos
 	hitbox_shape.position = original_shape_pos

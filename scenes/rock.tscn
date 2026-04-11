@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://ddbu6sydwfrj8"]
 
 [ext_resource type="Texture2D" uid="uid://db50alfsel2fv" path="res://assets/images/ores/stone.png" id="1_ywtwi"]
+[ext_resource type="Script" path="res://assets/scripts/rock.gd" id="2_rock"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_mtk1v"]
 atlas = ExtResource("1_ywtwi")
@@ -10,9 +11,12 @@ region = Rect2(16.583786, 48, 15.416214, 16)
 radius = 8.062258
 
 [node name="Rock" type="CharacterBody2D" unique_id=1075422711]
+collision_layer = 2
+script = ExtResource("2_rock")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1501019067]
 texture = SubResource("AtlasTexture_mtk1v")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1257157969]
+collision_layer = 2
 shape = SubResource("CircleShape2D_aivgl")
