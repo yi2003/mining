@@ -2,6 +2,7 @@ extends Node2D
 
 @onready var rock_scene = preload("res://scenes/rock.tscn")
 @onready var map = $Map/TileMapLayer
+@onready var score_label = $ScoreLabel
 var ore_scenes = {
 	"coal": preload("res://scenes/coal.tscn"),
 	"gold": preload("res://scenes/gold.tscn"),
@@ -71,6 +72,7 @@ func spawn_random_ore(spawn_pos: Vector2):
 	ore.position = spawn_pos
 	ore.modulate.a = 0
 	$YSort.add_child(ore)
+	ore.collected.connect(_on_Ore_collected)
 
 	var tween = create_tween()
 	tween.set_ease(Tween.EASE_OUT)
@@ -83,3 +85,10 @@ func spawn_random_ore(spawn_pos: Vector2):
 	var player = $YSort/Player
 	$YSort.remove_child(player)
 	$YSort.add_child(player)
+
+func _on_Ore_collected(points: int):
+	GameState.add_score(points)
+	_update_score_label()
+
+func _update_score_label():
+	score_label.text = "Score: " + str(GameState.score)

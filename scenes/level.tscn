@@ -14,3 +14,10 @@ script = ExtResource("3_level")
 
 [node name="Player" parent="YSort" unique_id=1413802782 instance=ExtResource("1_dyaho")]
 position = Vector2(41, 56)
+
+[node name="ScoreLabel" type="Label" parent="." unique_id=123456789]
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 80.0
+offset_bottom = 20.0
+text = "Score: 0"
