@@ -353,6 +353,10 @@ frame_progress = 1.0
 position = Vector2(-0.5, 5)
 shape = SubResource("RectangleShape2D_rwm0n")
 
+[node name="Camera2D" type="Camera2D" parent="." unique_id=999999999]
+position_smoothing_enabled = true
+position_smoothing_speed = 5.0
+
 [node name="Hitbox" type="Area2D" parent="." unique_id=1110102169]
 position = Vector2(5, -1)
 collision_layer = 2
