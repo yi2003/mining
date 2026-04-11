@@ -3,9 +3,15 @@ extends CharacterBody2D
 const SPEED = 100.0
 
 @onready var animated_sprite = $AnimatedSprite2D
+@onready var hitbox = $Hitbox
+@onready var hitbox_shape = $Hitbox/CollisionShape2D
 
 var facing_direction = "down"  # Track facing: "up", "down", "left", "right"
 var is_axe_swinging = false
+
+# Original hitbox position for reference
+var original_hitbox_pos = Vector2(5, -1)
+var original_shape_pos = Vector2(4.5, 5)
 
 func _ready():
 	# Start with idle animation
@@ -25,14 +31,38 @@ func _play_axe_animation():
 	match facing_direction:
 		"up":
 			animated_sprite.play("axe_up")
+			# Hitbox above player for up attack
+			hitbox.position = Vector2(0, -12)
+			hitbox_shape.position = Vector2(0.5, -5)
+			hitbox.scale.x = 1
 		"down":
 			animated_sprite.play("axe_down")
-		"left", "right":
+			# Hitbox below player for down attack
+			hitbox.position = Vector2(0, 10)
+			hitbox_shape.position = Vector2(0.5, 0)
+			hitbox.scale.x = 1
+		"left":
 			animated_sprite.play("axe_right")
+			animated_sprite.flip_h = true
+			# Hitbox to the left for left attack (no flip, just position left)
+			hitbox.position = Vector2(-7, -1)
+			hitbox_shape.position = Vector2(-1.5, 5)
+			hitbox.scale.x = 1
+		"right":
+			animated_sprite.play("axe_right")
+			animated_sprite.flip_h = false
+			# Hitbox to the right for right attack
+			hitbox.position = Vector2(5, -1)
+			hitbox_shape.position = Vector2(4.5, 5)
+			hitbox.scale.x = 1
 
 	# Wait for animation to finish before allowing another swing
 	await animated_sprite.animation_finished
 	print("Axe animation finished")
+	# Reset hitbox
+	hitbox.position = original_hitbox_pos
+	hitbox_shape.position = original_shape_pos
+	hitbox.scale.x = 1
 	is_axe_swinging = false
 
 func _physics_process(_delta):

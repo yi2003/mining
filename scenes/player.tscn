@@ -335,13 +335,26 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_rwm0n"]
 size = Vector2(13, 8)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qhqgy"]
+size = Vector2(11, 10)
+
 [node name="Player" type="CharacterBody2D" unique_id=1413802782]
 script = ExtResource("2_script")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=2057629261]
 sprite_frames = SubResource("SpriteFrames_u8vuu")
-animation = &"axe_down"
+animation = &"axe_right"
+frame = 1
+frame_progress = 1.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=892197776]
 position = Vector2(-0.5, 5)
 shape = SubResource("RectangleShape2D_rwm0n")
+
+[node name="Hitbox" type="Area2D" parent="." unique_id=1110102169]
+position = Vector2(5, -1)
+metadata/_edit_group_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox" unique_id=1574106262]
+position = Vector2(4.5, 5)
+shape = SubResource("RectangleShape2D_qhqgy")
