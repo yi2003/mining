@@ -31,9 +31,7 @@ func _set_player_start_position():
 		if tile_data != null and tile_data.get_custom_data("IS_START") == true:
 			var player = $YSort/Player
 			player.position = map.map_to_local(cell)
-			print("Player starting at IS_START tile: ", cell)
 			return
-	print("No IS_START tile found, player stays at default position")
 
 func _clear_all_rocks():
 	var rocks_to_remove = []
