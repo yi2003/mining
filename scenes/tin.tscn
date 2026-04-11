@@ -1,11 +1,13 @@
 [gd_scene format=3 uid="uid://c0hpjlabp1f0w"]
 
 [ext_resource type="Texture2D" uid="uid://bwktsx1qlcjer" path="res://assets/images/ores/tin.png" id="1_tin"]
+[ext_resource type="Script" path="res://assets/scripts/ore_tin.gd" id="2_tin"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_tin"]
 radius = 8.0
 
 [node name="root" type="Area2D" unique_id=2137896906]
+script = ExtResource("2_tin")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=925017136]
 texture = ExtResource("1_tin")

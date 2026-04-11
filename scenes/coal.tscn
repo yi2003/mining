@@ -1,11 +1,13 @@
 [gd_scene format=3 uid="uid://chwie8pc8dn2g"]
 
 [ext_resource type="Texture2D" uid="uid://db50alfsel2fv" path="res://assets/images/ores/stone.png" id="1_coal"]
+[ext_resource type="Script" path="res://assets/scripts/ore_coal.gd" id="2_coal"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_coal"]
 radius = 8.0
 
 [node name="root" type="Area2D" unique_id=887105285]
+script = ExtResource("2_coal")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1284196763]
 texture = ExtResource("1_coal")

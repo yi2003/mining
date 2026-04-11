@@ -1,11 +1,13 @@
 [gd_scene format=3 uid="uid://ddm4cfai72dsv"]
 
 [ext_resource type="Texture2D" uid="uid://dn8uqorgdbt0a" path="res://assets/images/ores/silver.png" id="1_solar"]
+[ext_resource type="Script" path="res://assets/scripts/ore_solar.gd" id="2_solar"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_solar"]
 radius = 8.0
 
 [node name="root" type="Area2D" unique_id=2020265753]
+script = ExtResource("2_solar")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1849899360]
 texture = ExtResource("1_solar")
