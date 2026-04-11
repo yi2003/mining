@@ -2,7 +2,7 @@ extends Node2D
 
 @onready var rock_scene = preload("res://scenes/rock.tscn")
 @onready var map = $Map/TileMapLayer
-@onready var score_label = $ScoreLabel
+@onready var score_label = $UILayer/ScoreLabel
 var ore_scenes = {
 	"coal": preload("res://scenes/coal.tscn"),
 	"gold": preload("res://scenes/gold.tscn"),

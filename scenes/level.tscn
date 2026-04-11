@@ -8,6 +8,15 @@
 [node name="Level" type="Node2D" unique_id=456164857]
 script = ExtResource("3_level")
 
+[node name="UILayer" type="CanvasLayer" parent="."]
+
+[node name="ScoreLabel" type="Label" parent="UILayer" unique_id=123456789]
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 80.0
+offset_bottom = 20.0
+text = "Score: 0"
+
 [node name="Map" parent="." unique_id=1761456509 instance=ExtResource("2_mx8sn")]
 
 [node name="YSort" type="Node2D" parent="."]
