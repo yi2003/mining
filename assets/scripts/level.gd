@@ -12,6 +12,8 @@ var ore_scenes = {
 }
 
 var ore_names = ["gold", "iron", "tin"]
+var rocks_spawned = 0
+var ore_drop_chance: float = 0.7  # 70% chance to spawn ore
 
 func _ready():
 	clear_all_rocks()
@@ -20,10 +22,6 @@ func _ready():
 	var player = $YSort/Player
 	$YSort.remove_child(player)
 	$YSort.add_child(player)
-	# Connect rock destroyed signals for all rocks in the level
-	for child in $YSort.get_children():
-		if child.name.begins_with("Rock"):
-			child.rock_destroyed.connect(_on_Rock_rock_destroyed)
 
 func clear_all_rocks():
 	var rocks_to_remove = []
@@ -32,6 +30,7 @@ func clear_all_rocks():
 			rocks_to_remove.append(child)
 	for rock in rocks_to_remove:
 		rock.queue_free()
+	rocks_spawned = 0
 
 func spawn_rocks(count: int):
 	var used_cells = map.get_used_cells()
@@ -59,11 +58,17 @@ func spawn_rocks(count: int):
 		rock.position = cell_center
 		rock.name = "Rock_" + str(placed)
 		$YSort.add_child(rock)
+		rock.rock_destroyed.connect(_on_Rock_rock_destroyed)
+		rocks_spawned += 1
 		placed += 1
+	print("Spawned ", rocks_spawned, " rocks")
 
 func _on_Rock_rock_destroyed(spawn_pos: Vector2):
-	print("Rock destroyed at: ", spawn_pos, " - spawning random ore")
-	spawn_random_ore(spawn_pos)
+	print("Rock destroyed at: ", spawn_pos)
+	if randf() <= ore_drop_chance:
+		spawn_random_ore(spawn_pos)
+	else:
+		print("No ore dropped")
 
 func spawn_random_ore(spawn_pos: Vector2):
 	var ore_name = ore_names[randi() % ore_names.size()]
