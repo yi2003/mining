@@ -1,6 +1,7 @@
 extends Node2D
 
 @onready var rock_scene = preload("res://scenes/rock.tscn")
+@onready var map = $Map/TileMapLayer
 var ore_scenes = {
 	"coal": preload("res://scenes/coal.tscn"),
 	"gold": preload("res://scenes/gold.tscn"),
@@ -9,13 +10,55 @@ var ore_scenes = {
 	"tin": preload("res://scenes/tin.tscn")
 }
 
-var ore_names = ["coal", "gold", "iron", "solar", "tin"]
+var ore_names = ["gold", "iron", "tin"]
 
 func _ready():
+	clear_all_rocks()
+	spawn_rocks(5)
+	# Reorder player to be last in YSort so player renders in front when Y is equal
+	var player = $YSort/Player
+	$YSort.remove_child(player)
+	$YSort.add_child(player)
 	# Connect rock destroyed signals for all rocks in the level
-	for child in get_children():
-		if child.name == "Rock":
+	for child in $YSort.get_children():
+		if child.name.begins_with("Rock"):
 			child.rock_destroyed.connect(_on_Rock_rock_destroyed)
+
+func clear_all_rocks():
+	var rocks_to_remove = []
+	for child in $YSort.get_children():
+		if child.name.begins_with("Rock"):
+			rocks_to_remove.append(child)
+	for rock in rocks_to_remove:
+		rock.queue_free()
+
+func spawn_rocks(count: int):
+	var used_cells = map.get_used_cells()
+	var shuffled_cells = Array(used_cells)
+	shuffled_cells.shuffle()
+
+	# Filter cells: only place rocks where there's no prop tile (source != 1)
+	# and CANWORK custom data is true
+	var valid_cells = []
+	for cell in shuffled_cells:
+		var source_id = map.get_cell_source_id(cell)
+		# Source 1 is props (no physics), skip those cells
+		if source_id != 1:
+			# Check CANWORK custom data
+			var tile_data = map.get_cell_tile_data(cell)
+			if tile_data != null and tile_data.get_custom_data("CANWORK") == true:
+				valid_cells.append(cell)
+
+	var placed = 0
+	for cell in valid_cells:
+		if placed >= count:
+			break
+		var cell_center = map.map_to_local(cell)
+		var rock = rock_scene.instantiate()
+		rock.position = cell_center
+		rock.name = "Rock_" + str(placed)
+		$YSort.add_child(rock)
+		placed += 1
 
 func _on_Rock_rock_destroyed(spawn_pos: Vector2):
 	print("Rock destroyed at: ", spawn_pos, " - spawning random ore")
@@ -27,7 +70,7 @@ func spawn_random_ore(spawn_pos: Vector2):
 	var ore = ore_scenes[ore_name].instantiate()
 	ore.position = spawn_pos
 	ore.modulate.a = 0
-	add_child(ore)
+	$YSort.add_child(ore)
 
 	var tween = create_tween()
 	tween.set_ease(Tween.EASE_OUT)
@@ -36,3 +79,7 @@ func spawn_random_ore(spawn_pos: Vector2):
 	ore.position.y -= 50
 	tween.tween_property(ore, "position", spawn_pos, 0.4)
 	tween.parallel().tween_property(ore, "modulate:a", 1.0, 0.3)
+	# Keep player on top of YSort
+	var player = $YSort/Player
+	$YSort.remove_child(player)
+	$YSort.add_child(player)

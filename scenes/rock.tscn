@@ -12,6 +12,7 @@ radius = 8.062258
 
 [node name="Rock" type="CharacterBody2D" unique_id=1075422711]
 collision_layer = 2
+collision_mask = 2
 script = ExtResource("2_rock")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1501019067]

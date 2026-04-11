@@ -23,38 +23,44 @@ func _unhandled_input(event):
 		_play_axe_animation()
 
 func _play_axe_animation():
-	# Check for overlapping bodies and deal damage
-	var bodies = hitbox.get_overlapping_bodies()
-	for body in bodies:
-		if body.has_method("take_damage"):
-			body.take_damage()
+	# Always reset flip_h first, then set direction-specific values
+	animated_sprite.flip_h = false
 	match facing_direction:
 		"up":
 			animated_sprite.play("axe_up")
 			# Hitbox above player for up attack
-			hitbox.position = Vector2(0, -12)
-			hitbox_shape.position = Vector2(0.5, -5)
+			hitbox.position = Vector2(0, -6)
+			hitbox_shape.position = Vector2(0, -5)
 			hitbox.scale.x = 1
 		"down":
 			animated_sprite.play("axe_down")
 			# Hitbox below player for down attack
-			hitbox.position = Vector2(0, 10)
-			hitbox_shape.position = Vector2(0.5, 0)
+			hitbox.position = Vector2(0, 6)
+			hitbox_shape.position = Vector2(0, 5)
 			hitbox.scale.x = 1
 		"left":
 			animated_sprite.play("axe_right")
 			animated_sprite.flip_h = true
-			# Hitbox to the left for left attack (no flip, just position left)
-			hitbox.position = Vector2(-7, -1)
-			hitbox_shape.position = Vector2(-1.5, 5)
-			hitbox.scale.x = 1
+			# Hitbox to the left — mirror the right attack via scale.x = -1
+			hitbox.position = Vector2(-5, -1)
+			hitbox_shape.position = Vector2(4.5, 5)
+			hitbox.scale.x = -1
 		"right":
 			animated_sprite.play("axe_right")
-			animated_sprite.flip_h = false
+			# flip_h already false from reset above
 			# Hitbox to the right for right attack
 			hitbox.position = Vector2(5, -1)
 			hitbox_shape.position = Vector2(4.5, 5)
 			hitbox.scale.x = 1
+
+	# Check for overlapping bodies and deal damage
+	# Wait one physics frame for hitbox position to update
+	await get_tree().physics_frame
+	await get_tree().physics_frame
+	var bodies = hitbox.get_overlapping_bodies()
+	for body in bodies:
+		if body.has_method("take_damage"):
+			body.take_damage()
 
 	# Wait for animation to finish before allowing another swing
 	await animated_sprite.animation_finished

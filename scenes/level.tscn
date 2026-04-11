@@ -2,13 +2,15 @@
 
 [ext_resource type="PackedScene" uid="uid://cion5uuq4bmxv" path="res://scenes/player.tscn" id="1_dyaho"]
 [ext_resource type="PackedScene" uid="uid://ddbu6sydwfrj8" path="res://scenes/rock.tscn" id="2_ckblc"]
-[ext_resource type="Script" path="res://assets/scripts/level.gd" id="3_level"]
+[ext_resource type="PackedScene" uid="uid://btsonlu2h4ctk" path="res://scenes/map.tscn" id="2_mx8sn"]
+[ext_resource type="Script" uid="uid://bim5lau8t5u4b" path="res://assets/scripts/level.gd" id="3_level"]
 
 [node name="Level" type="Node2D" unique_id=456164857]
 script = ExtResource("3_level")
 
-[node name="Rock" parent="." unique_id=1075422711 instance=ExtResource("2_ckblc")]
-position = Vector2(109, 56)
+[node name="Map" parent="." unique_id=1761456509 instance=ExtResource("2_mx8sn")]
 
-[node name="Player" parent="." unique_id=1413802782 instance=ExtResource("1_dyaho")]
+[node name="YSort" type="Node2D" parent="."]
+
+[node name="Player" parent="YSort" unique_id=1413802782 instance=ExtResource("1_dyaho")]
 position = Vector2(41, 56)
