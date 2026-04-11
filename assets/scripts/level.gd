@@ -18,10 +18,22 @@ var ore_drop_chance: float = 0.7  # 70% chance to spawn ore
 func _ready():
 	clear_all_rocks()
 	spawn_rocks(5)
-	# Reorder player to be last in YSort so player renders in front when Y is equal
+	# Set player start position based on IS_START tile
 	var player = $YSort/Player
+	var start_pos = _find_start_position()
+	if start_pos != Vector2.ZERO:
+		player.position = start_pos
+	# Reorder player to be last in YSort so player renders in front when Y is equal
 	$YSort.remove_child(player)
 	$YSort.add_child(player)
+
+func _find_start_position() -> Vector2:
+	var cells = map.get_used_cells()
+	for cell in cells:
+		var tile_data = map.get_cell_tile_data(cell)
+		if tile_data != null and tile_data.get_custom_data("IS_START") == true:
+			return map.map_to_local(cell)
+	return Vector2.ZERO
 
 func clear_all_rocks():
 	var rocks_to_remove = []
