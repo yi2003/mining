@@ -169,3 +169,6 @@ tile_set = SubResource("TileSet_gldc4")
 [node name="Ladder" type="TileMapLayer" parent="." unique_id=646839317]
 tile_map_data = PackedByteArray("AAADAAMAAAAAAAAAAAADAAQAAAADAAEAAAADAAUAAAADAAIAAAADAAcAAAADAAIAAAAEAAMAAAAAAAMAAAAFAAMAAAAAAAMAAAAIAAMAAAAAAAMAAAAJAAMAAAAAAAMAAAA=")
 tile_set = SubResource("TileSet_nakos")
+
+[node name="PlayerStart" type="Marker2D" parent="." unique_id=2015827731]
+position = Vector2(184, 56)
