@@ -14,7 +14,7 @@ script = ExtResource("2_gem")
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1501019068]
 texture = ExtResource("1_amethyst")
 region_enabled = true
-region_rect = Rect2(0, 0, 16, 16)
+region_rect = Rect2(0, 16, 16, 16)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1257157970]
 shape = SubResource("CircleShape2D_gem")

@@ -2,7 +2,7 @@ extends Area2D
 
 signal collected(points: int)
 
-const POINT_VALUE: int = 5
+const POINT_VALUE: int = 4
 
 func _ready():
 	body_entered.connect(_on_body_entered)

@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://qsph16n6hy8k"]
+
+[ext_resource type="Texture2D" uid="uid://derhv0ran21ly" path="res://assets/images/gems/amethyst.png" id="1_amethyst"]
+[ext_resource type="Script" uid="uid://4655g6u6kyvc" path="res://assets/scripts/ore_amethyst.gd" id="2_amethyst"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_amethyst"]
+radius = 8.0
+
+[node name="root" type="Area2D" unique_id=1479316038]
+script = ExtResource("2_amethyst")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=2049010516]
+texture = ExtResource("1_amethyst")
+region_enabled = true
+region_rect = Rect2(32, 16, 16, 16)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=536333301]
+shape = SubResource("CircleShape2D_amethyst")

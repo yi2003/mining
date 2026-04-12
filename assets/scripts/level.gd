@@ -1,7 +1,8 @@
 extends Node2D
 
 @onready var rock_scene = preload("res://scenes/rock.tscn")
-@onready var gem_scene = preload("res://scenes/gem.tscn")
+@onready var amethyst_rock_scene = preload("res://scenes/amethyst_rock.tscn")
+@onready var diamond_rock_scene = preload("res://scenes/diamond_rock.tscn")
 @onready var map = $Map/TileMapLayer
 @onready var score_label = $UILayer/ScoreLabel
 var ore_scenes = {
@@ -10,13 +11,14 @@ var ore_scenes = {
 	"iron": preload("res://scenes/iron.tscn"),
 	"solar": preload("res://scenes/solar.tscn"),
 	"tin": preload("res://scenes/tin.tscn"),
-	"diamond": preload("res://scenes/diamond.tscn")
+	"diamond": preload("res://scenes/diamond.tscn"),
+	"amethyst": preload("res://scenes/amethyst.tscn")
 }
 
-var ore_names = ["gold", "iron", "tin", "diamond"]
+var ore_names = ["gold", "iron", "tin", "diamond", "amethyst"]
 var rocks_spawned = 0
 var ore_drop_chance: float = 0.7  # 70% chance to spawn ore
-var gem_chance: float = 0.2  # 20% chance to spawn gem instead of rock
+var gem_chance: float = 1.0  # 100% chance to spawn gem instead of rock (testing)
 
 func _ready():
 	_clear_all_rocks()
@@ -67,7 +69,12 @@ func _spawn_rocks(count: int):
 		if placed >= count:
 			break
 		var cell_center = map.map_to_local(cell)
-		var rock_scene_to_use = gem_scene if randf() < gem_chance else rock_scene
+		var rock_scene_to_use
+		if randf() < gem_chance:
+			# Choose between amethyst and diamond rock
+			rock_scene_to_use = amethyst_rock_scene if randf() < 0.5 else diamond_rock_scene
+		else:
+			rock_scene_to_use = rock_scene
 		var rock = rock_scene_to_use.instantiate()
 		rock.position = cell_center
 		rock.name = "Rock_" + str(placed)
@@ -84,9 +91,9 @@ func _on_Rock_rock_destroyed(spawn_pos: Vector2, type: String = "stone"):
 			spawn_random_ore(spawn_pos)
 		else:
 			print("No ore dropped")
-	# For gem type, gem handles its own diamond spawning
-	elif type == "gem":
-		print("Gem destroyed, diamond spawning handled by gem script")
+	# For gem types, gem rocks handle their own gem spawning
+	elif type == "gem" or type == "amethyst_rock" or type == "diamond_rock":
+		print("Gem rock destroyed, spawning handled by gem rock script")
 
 func spawn_random_ore(spawn_pos: Vector2):
 	var ore_name = ore_names[randi() % ore_names.size()]
