@@ -22,10 +22,19 @@ func take_damage():
 
 func spawn_diamond():
 	var diamond = DIAMOND_SCENE.instantiate()
-	diamond.position = global_position
+	var spawn_pos = global_position
+	diamond.position = spawn_pos
+	diamond.modulate.a = 0
 	# Add to the same parent as this gem rock (YSort)
 	get_parent().add_child(diamond)
 	# Connect diamond collected signal to level's handler
 	var level = get_parent().get_parent()
 	if level.has_method("_on_Ore_collected"):
 		diamond.collected.connect(level._on_Ore_collected)
+	# Drop animation
+	diamond.position.y -= 50
+	var tween = diamond.create_tween()
+	tween.set_ease(Tween.EASE_OUT)
+	tween.set_trans(Tween.TRANS_BACK)
+	tween.tween_property(diamond, "position", spawn_pos, 0.4)
+	tween.parallel().tween_property(diamond, "modulate:a", 1.0, 0.3)
