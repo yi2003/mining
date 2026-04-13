@@ -18,7 +18,7 @@ var ore_scenes = {
 var ore_names = ["gold", "iron", "tin", "diamond", "amethyst"]
 var rocks_spawned = 0
 var ore_drop_chance: float = 0.7  # 70% chance to spawn ore
-var gem_chance: float = 1.0  # 100% chance to spawn gem instead of rock (testing)
+var gem_chance: float = 0.5  # 50% chance to spawn gem rock, 50% for regular rock
 
 func _ready():
 	_clear_all_rocks()
