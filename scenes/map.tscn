@@ -8,27 +8,27 @@
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_paxxb"]
 texture = ExtResource("1_4xfga")
 0:0/0 = 0
-0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(0.64412117, 1.6846275, 0.34683418, 1.4864349, 8, 1.189148, 8, 8, 0.5450268, 8)
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 0.23981094, 1.318964, 0.9592457, 1.318964, 8, -8, 8)
 1:0/0 = 0
-1:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, 8, -8, 1.189148, 8, 0.594574, 8, 8, 0.5450268, 8)
+1:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 0.23981094, 1.318964, 0.9592457, -8, 0.8393402)
 2:0/0 = 0
-2:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, 8, -8, 1.189148, -0.44593048, 0.99095726, -0.6441231, 8, 0.5450268, 8)
+2:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -0.9592476, 8, -0.71943665, 1.4388695, -8, 0.8393402)
 3:0/0 = 0
 4:0/0 = 0
 0:1/0 = 0
-0:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(0.64412117, 1.6846275, 0.5450268, -8, 8, -8, 8, 8, 0.5450268, 8)
+0:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 1.6244087, -8, 1.2882433, -8, 0.81220436, -1.2183065, 1.2859898, 8, -8, 8)
 1:1/0 = 0
 1:1/0/custom_data_0 = true
 2:1/0 = 0
-2:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, 8, -8.274492, -9.711378, -0.44593048, -8, -0.6441231, 8, 0.5450268, 8)
+2:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(8, -8, 8, -2.0383987, 8, 8, -0.59952927, 8, -0.9592476, -8)
 3:1/0 = 0
 4:1/0 = 0
 0:2/0 = 0
-0:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(0.64412117, 1.6846275, 0.5450268, -8, 8, -8, 8, 8, 0.5450268, 8)
+0:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 1.6244087, -8, 1.2882433, -8, 0.81220436, -1.2183065, 8, -1.5855312, 8, 8, -8, 8)
 1:2/0 = 0
-1:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, 8, -8, -8, 8, -8, 8, 8, 0.5450268, 8)
+1:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(8, -0.8393402, 8, 8, -8, 8, -8, -0.71943474, -1.0791531, -0.71943474)
 2:2/0 = 0
-2:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, 8, -8.274492, -9.711378, -0.44593048, -8, -0.6441231, 8, 0.5450268, 8)
+2:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-0.71943665, -8, 8, -8, 8, 8, -8, 8, -8, -0.71943474, -1.0791531, -0.71943474)
 3:2/0 = 0
 4:2/0 = 0
 
