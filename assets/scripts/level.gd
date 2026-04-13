@@ -220,5 +220,5 @@ func _physics_process(_delta):
 	if player.is_climbing and not is_transitioning:
 		var vertical = Input.get_axis("ui_up", "ui_down")
 		if vertical != 0:
-			change_floor(-vertical)
+			change_floor(vertical)
 			is_transitioning = true  # Prevent multiple triggers
