@@ -5,8 +5,6 @@ extends "res://assets/scripts/rock.gd"
 const DIAMOND_SCENE = preload("res://scenes/diamond.tscn")
 const AMETHYST_SCENE = preload("res://scenes/amethyst.tscn")
 
-@onready var sprite: Sprite2D = $Sprite2D
-
 var will_drop_diamond = false  # Determined at creation
 
 func _ready():
@@ -28,7 +26,10 @@ func _update_sprite_region():
 		sprite.region_rect = Rect2(x_offset, y_offset, 16, 16)
 
 func take_damage():
+	if health <= 0:
+		return
 	health -= 1
+	_play_flash_effect()
 	if health > 0:
 		_update_sprite_region()
 	else:
@@ -37,6 +38,7 @@ func take_damage():
 			spawn_diamond()
 		else:
 			spawn_amethyst()
+		await get_tree().create_timer(0.15).timeout
 		queue_free()
 
 func spawn_diamond():

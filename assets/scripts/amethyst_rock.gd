@@ -2,8 +2,6 @@ extends "res://assets/scripts/rock.gd"
 
 const AMETHYST_SCENE = preload("res://scenes/amethyst.tscn")
 
-@onready var sprite: Sprite2D = $Sprite2D
-
 func _ready():
 	rock_type = "amethyst_rock"
 	# Set sprite region to always show amethyst gem rock (x=0, y=16)
@@ -12,10 +10,14 @@ func _ready():
 
 
 func take_damage():
+	if health <= 0:
+		return
 	health -= 1
+	_play_flash_effect()
 	if health <= 0:
 		emit_signal("rock_destroyed", global_position, rock_type)
 		spawn_amethyst()
+		await get_tree().create_timer(0.15).timeout
 		queue_free()
 
 func spawn_amethyst():
