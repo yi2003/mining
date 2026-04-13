@@ -10,12 +10,17 @@ func _ready():
 
 
 func take_damage():
-	if health <= 0:
+	if health <= 0 or is_dying:
 		return
 	health -= 1
 	_play_flash_effect()
 	if health <= 0:
-		emit_signal("rock_destroyed", global_position, rock_type)
+		is_dying = true
+		emit_signal("rock_destroyed", global_position, rock_type, self)
+		if skip_gem_spawn:
+			await get_tree().create_timer(0.15).timeout
+			queue_free()
+			return
 		spawn_diamond()
 		await get_tree().create_timer(0.15).timeout
 		queue_free()

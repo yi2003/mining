@@ -8,6 +8,9 @@ const SPEED = 100.0
 
 var facing_direction = "down"  # Track facing: "up", "down", "left", "right"
 var is_axe_swinging = false
+var is_climbing: bool = false
+var current_ladder: Node = null
+var is_transitioning: bool = false
 
 # Original hitbox position for reference
 var original_hitbox_pos = Vector2(5, -1)
@@ -76,6 +79,11 @@ func _physics_process(_delta):
 		is_axe_swinging = true
 		_play_axe_animation()
 
+	# Climbing mode - handle separately
+	if is_climbing:
+		_handle_climbing_input()
+		return
+
 	# Get input direction
 	var direction = Vector2.ZERO
 	direction.x = Input.get_axis("ui_left", "ui_right")
@@ -121,3 +129,19 @@ func _physics_process(_delta):
 					animated_sprite.play("idle_up")
 				"down":
 					animated_sprite.play("idle_down")
+
+func _handle_climbing_input():
+	var horizontal = Input.get_axis("ui_left", "ui_right")
+
+	# Exit climbing on horizontal input
+	if abs(horizontal) > 0:
+		_exit_climbing()
+
+func enter_climbing(ladder):
+	is_climbing = true
+	current_ladder = ladder
+	velocity = Vector2.ZERO
+
+func _exit_climbing():
+	is_climbing = false
+	current_ladder = null

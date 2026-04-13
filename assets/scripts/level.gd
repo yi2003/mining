@@ -20,19 +20,38 @@ var rocks_spawned = 0
 var ore_drop_chance: float = 0.7  # 70% chance to spawn ore
 var gem_chance: float = 0.5  # 50% chance to spawn gem rock, 50% for regular rock
 
+# Ladder spawning
+var ladder_scene = preload("res://scenes/ladder.tscn")
+var ladder_spawned: bool = false
+var last_rock_pos: Vector2 = Vector2.ZERO
+var ladder_spawn_chance: float = 0.3  # 30% chance to spawn ladder
+
+# Floor system
+var current_floor: int = 0
+var floor_height: int = 180  # viewport height
+var world_offset_y: int = 0
+var max_floor: int = 3
+var is_transitioning: bool = false
+
+@onready var fade_rect = $FadeRect
+@onready var world_container = $YSort
+@onready var player = $YSort/Player
+
 func _ready():
 	_clear_all_rocks()
 	_spawn_rocks(5)
 	_set_player_start_position()
 	# Reorder player to be last in YSort so player renders in front when Y is equal
-	var player = $YSort/Player
-	$YSort.remove_child(player)
-	$YSort.add_child(player)
+	var player_ref = $YSort/Player
+	$YSort.remove_child(player_ref)
+	$YSort.add_child(player_ref)
+
+	# Initialize world container position for floor offset
+	world_container.position.y = world_offset_y
 
 func _set_player_start_position():
 	var player_start = $Map/PlayerStart
 	if player_start:
-		var player = $YSort/Player
 		player.position = player_start.position
 		print("Player start position set to: ", player_start.position)
 	else:
@@ -84,8 +103,27 @@ func _spawn_rocks(count: int):
 		placed += 1
 	print("Spawned ", rocks_spawned, " rocks")
 
-func _on_Rock_rock_destroyed(spawn_pos: Vector2, type: String = "stone"):
+func _on_Rock_rock_destroyed(spawn_pos: Vector2, type: String = "stone", rock: Node = null):
 	print("Rock destroyed at: ", spawn_pos, " type: ", type)
+	last_rock_pos = spawn_pos
+
+	# Check if this was the last rock and ladder hasn't spawned
+	rocks_spawned -= 1
+	if rocks_spawned <= 0 and not ladder_spawned:
+		# Force spawn ladder at last rock position
+		_spawn_ladder(last_rock_pos)
+		if rock:
+			rock.skip_gem_spawn = true
+		return
+
+	# Random ladder spawn chance
+	if not ladder_spawned and randf() <= ladder_spawn_chance:
+		_spawn_ladder(spawn_pos)
+		if rock:
+			rock.skip_gem_spawn = true
+		return
+
+	# Only spawn ore if ladder didn't spawn
 	if type == "stone":
 		if randf() <= ore_drop_chance:
 			spawn_random_ore(spawn_pos)
@@ -94,6 +132,18 @@ func _on_Rock_rock_destroyed(spawn_pos: Vector2, type: String = "stone"):
 	# For gem types, gem rocks handle their own gem spawning
 	elif type == "gem" or type == "amethyst_rock" or type == "diamond_rock":
 		print("Gem rock destroyed, spawning handled by gem rock script")
+
+func _spawn_ladder(spawn_pos: Vector2):
+	print("Spawning ladder at: ", spawn_pos)
+	var ladder = ladder_scene.instantiate()
+	ladder.position = spawn_pos
+	ladder_spawned = true
+	$YSort.add_child(ladder)
+	ladder.player_entered_ladder.connect(_on_ladder_entered)
+	ladder.player_exited_ladder.connect(_on_ladder_exited)
+	# Keep player on top of YSort
+	$YSort.remove_child(player)
+	$YSort.add_child(player)
 
 func spawn_random_ore(spawn_pos: Vector2):
 	var ore_name = ore_names[randi() % ore_names.size()]
@@ -112,7 +162,6 @@ func spawn_random_ore(spawn_pos: Vector2):
 	tween.tween_property(ore, "position", spawn_pos, 0.4)
 	tween.parallel().tween_property(ore, "modulate:a", 1.0, 0.3)
 	# Keep player on top of YSort
-	var player = $YSort/Player
 	$YSort.remove_child(player)
 	$YSort.add_child(player)
 
@@ -122,3 +171,54 @@ func _on_Ore_collected(points: int):
 
 func _update_score_label():
 	score_label.text = "Score: " + str(GameState.score)
+
+func change_floor(direction: int):
+	if is_transitioning:
+		return
+	var new_floor = current_floor + direction
+	if new_floor < 0 or new_floor > max_floor:
+		return
+
+	is_transitioning = true
+
+	# Fade out
+	fade_rect.visible = true
+	fade_rect.modulate.a = 0
+	var tween = create_tween()
+	tween.tween_property(fade_rect, "modulate:a", 1.0, 0.15)
+
+	await tween.finished
+
+	# Update floor
+	current_floor = new_floor
+	world_offset_y = -current_floor * floor_height
+
+	# Apply offset to world container (player stays at same screen pos)
+	world_container.position.y = world_offset_y
+
+	# Wait a moment
+	await get_tree().create_timer(0.05).timeout
+
+	# Fade in
+	tween = create_tween()
+	tween.tween_property(fade_rect, "modulate:a", 0.0, 0.15)
+	await tween.finished
+	fade_rect.visible = false
+
+	is_transitioning = false
+	player.is_transitioning = false
+	print("Changed to floor ", current_floor)
+
+func _on_ladder_entered(ladder):
+	player.enter_climbing(ladder)
+	print("Player entered ladder on floor ", ladder.floor_number)
+
+func _on_ladder_exited():
+	player._exit_climbing()
+
+func _physics_process(_delta):
+	if player.is_climbing and not is_transitioning:
+		var vertical = Input.get_axis("ui_up", "ui_down")
+		if vertical != 0:
+			change_floor(-vertical)
+			is_transitioning = true  # Prevent multiple triggers

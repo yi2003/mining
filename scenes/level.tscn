@@ -17,6 +17,14 @@ offset_right = 80.0
 offset_bottom = 20.0
 text = "Score: 0"
 
+[node name="FadeRect" type="ColorRect" parent="."]
+visible = false
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 320.0
+offset_bottom = 180.0
+color = Color(0, 0, 0, 1)
+
 [node name="Map" parent="." unique_id=1761456509 instance=ExtResource("2_mx8sn")]
 
 [node name="YSort" type="Node2D" parent="."]
