@@ -3,7 +3,13 @@ extends Node2D
 @onready var rock_scene = preload("res://scenes/rock.tscn")
 @onready var amethyst_rock_scene = preload("res://scenes/amethyst_rock.tscn")
 @onready var diamond_rock_scene = preload("res://scenes/diamond_rock.tscn")
-@onready var map = $Map/TileMapLayer
+var map: TileMapLayer = null
+var current_map_instance: Node2D = null
+var map_scenes = [
+	preload("res://scenes/map.tscn"),
+	preload("res://scenes/map_2.tscn"),
+	preload("res://scenes/map_3.tscn")
+]
 @onready var score_label = $UILayer/ScoreLabel
 var ore_scenes = {
 	"coal": preload("res://scenes/coal.tscn"),
@@ -38,6 +44,7 @@ var is_transitioning: bool = false
 @onready var player = $YSort/Player
 
 func _ready():
+	_load_map_for_floor(current_floor)
 	_clear_all_rocks()
 	_spawn_rocks(5)
 	_set_player_start_position()
@@ -49,8 +56,39 @@ func _ready():
 	# Initialize world container position for floor offset
 	world_container.position.y = world_offset_y
 
+func _load_map_for_floor(floor_num: int):
+	# Remove old map if exists
+	if current_map_instance:
+		$MapContainer.remove_child(current_map_instance)
+		current_map_instance.queue_free()
+		current_map_instance = null
+		map = null
+
+	# Load new map
+	if floor_num >= 0 and floor_num < map_scenes.size():
+		current_map_instance = map_scenes[floor_num].instantiate()
+		$MapContainer.add_child(current_map_instance)
+
+		# Find the TileMapLayer node in the map instance
+		# Map instances have structure: Map_X -> TileMapLayer
+		for child in current_map_instance.get_children():
+			if child is TileMapLayer:
+				map = child
+				break
+
+		print("Loaded map for floor ", floor_num)
+	else:
+		print("Error: Invalid floor number ", floor_num)
+
 func _set_player_start_position():
-	var player_start = $Map/PlayerStart
+	var player_start = null
+	if current_map_instance:
+		# Find PlayerStart node in the map instance
+		for child in current_map_instance.get_children():
+			if child.name == "PlayerStart":
+				player_start = child
+				break
+
 	if player_start:
 		player.position = player_start.position
 		print("Player start position set to: ", player_start.position)
@@ -58,6 +96,7 @@ func _set_player_start_position():
 		print("Warning: PlayerStart node not found")
 
 func _clear_all_rocks():
+	# Remove all Rock nodes from YSort
 	var rocks_to_remove = []
 	for child in $YSort.get_children():
 		if child.name.begins_with("Rock"):
@@ -65,8 +104,20 @@ func _clear_all_rocks():
 	for rock in rocks_to_remove:
 		rock.queue_free()
 	rocks_spawned = 0
+	print("Cleared ", rocks_to_remove.size(), " rocks")
+
+func _clear_all_ladders():
+	var ladders_to_remove = []
+	for child in $YSort.get_children():
+		if child.name.begins_with("Ladder"):
+			ladders_to_remove.append(child)
+	for ladder in ladders_to_remove:
+		ladder.queue_free()
 
 func _spawn_rocks(count: int):
+	if map == null:
+		print("Error: Map is null, cannot spawn rocks")
+		return
 	var used_cells = map.get_used_cells()
 	var shuffled_cells = Array(used_cells)
 	shuffled_cells.shuffle()
@@ -149,6 +200,7 @@ func spawn_random_ore(spawn_pos: Vector2):
 	var ore_name = ore_names[randi() % ore_names.size()]
 	print("Spawning: ", ore_name)
 	var ore = ore_scenes[ore_name].instantiate()
+	ore.name = ore_name  # Ensure cleanup finds it
 	ore.position = spawn_pos
 	ore.modulate.a = 0
 	$YSort.add_child(ore)
@@ -191,10 +243,37 @@ func change_floor(direction: int):
 
 	# Update floor
 	current_floor = new_floor
-	world_offset_y = -current_floor * floor_height
-
-	# Apply offset to world container (player stays at same screen pos)
+	# Reset world offset since we're loading a new map
+	world_offset_y = 0
 	world_container.position.y = world_offset_y
+
+	# Load new map for this floor
+	_load_map_for_floor(current_floor)
+
+	# Remove Node2D rock objects and ore/gem items (tile-based rocks are part of the map tiles)
+	var rocks_to_remove = []
+	var items_to_remove = []
+	for child in $YSort.get_children():
+		if child.name.begins_with("Rock"):
+			rocks_to_remove.append(child)
+		elif str(child.name) in ["ore", "gold", "iron", "tin", "solar", "coal", "DiamondGem", "AmethystGem"]:
+			items_to_remove.append(child)
+	for rock in rocks_to_remove:
+		rock.queue_free()
+	for item in items_to_remove:
+		item.queue_free()
+
+	_clear_all_ladders()
+
+	# Reset ladder flag for new floor
+	ladder_spawned = false
+
+	# Spawn rocks for new map
+	_spawn_rocks(5)
+
+	# Set player start position for new map
+	_set_player_start_position()
+
 
 	# Wait a moment
 	await get_tree().create_timer(0.05).timeout
@@ -212,6 +291,9 @@ func change_floor(direction: int):
 func _on_ladder_entered(ladder):
 	player.enter_climbing(ladder)
 	print("Player entered ladder on floor ", ladder.floor_number)
+	# Move to next floor when player enters ladder
+	if current_floor < max_floor:
+		change_floor(1)
 
 func _on_ladder_exited():
 	player._exit_climbing()

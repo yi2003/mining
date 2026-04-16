@@ -27,6 +27,7 @@ func take_damage():
 
 func spawn_diamond():
 	var diamond = DIAMOND_SCENE.instantiate()
+	diamond.name = "DiamondGem"  # Ensure cleanup finds it
 	var spawn_pos = global_position
 	diamond.position = spawn_pos
 	diamond.modulate.a = 0

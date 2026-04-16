@@ -27,6 +27,7 @@ func take_damage():
 
 func spawn_amethyst():
 	var amethyst = AMETHYST_SCENE.instantiate()
+	amethyst.name = "AmethystGem"  # Ensure cleanup finds it
 	var spawn_pos = global_position
 	amethyst.position = spawn_pos
 	amethyst.modulate.a = 0
