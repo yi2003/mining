@@ -1,7 +1,9 @@
 [gd_scene format=3 uid="uid://dvimrwetk18e0"]
 
 [ext_resource type="PackedScene" uid="uid://cion5uuq4bmxv" path="res://scenes/player.tscn" id="1_dyaho"]
+[ext_resource type="PackedScene" uid="uid://btsonlu2h4ctk" path="res://scenes/map.tscn" id="2_w8frs"]
 [ext_resource type="Script" uid="uid://bim5lau8t5u4b" path="res://assets/scripts/level.gd" id="3_level"]
+[ext_resource type="PackedScene" uid="uid://wtq1q7l7cjpg" path="res://scenes/hud.tscn" id="4_mx8sn"]
 
 [node name="Level" type="Node2D" unique_id=456164857]
 script = ExtResource("3_level")
@@ -23,7 +25,11 @@ color = Color(0, 0, 0, 1)
 
 [node name="MapContainer" type="Node2D" parent="." unique_id=1247706352]
 
+[node name="Map" parent="MapContainer" unique_id=1761456509 instance=ExtResource("2_w8frs")]
+
 [node name="YSort" type="Node2D" parent="." unique_id=1736055587]
 
 [node name="Player" parent="YSort" unique_id=1413802782 instance=ExtResource("1_dyaho")]
 position = Vector2(41, 56)
+
+[node name="HUD" parent="." unique_id=454040192 instance=ExtResource("4_mx8sn")]
