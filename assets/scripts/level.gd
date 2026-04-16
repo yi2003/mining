@@ -58,12 +58,12 @@ func _ready():
 	world_container.position.y = world_offset_y
 
 func _load_map_for_floor(floor_num: int):
-	# Remove old map if exists
-	if current_map_instance:
-		$MapContainer.remove_child(current_map_instance)
-		current_map_instance.queue_free()
-		current_map_instance = null
-		map = null
+	# Clear all children from MapContainer (including initial scene map)
+	for child in $MapContainer.get_children():
+		$MapContainer.remove_child(child)
+		child.queue_free()
+	current_map_instance = null
+	map = null
 
 	# Load new map
 	if floor_num >= 0 and floor_num < map_scenes.size():

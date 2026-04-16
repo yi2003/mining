@@ -1,0 +1,34 @@
+# Testing Ladder Transitions
+
+## Test Procedure
+1. Start the game on floor 0 (map.tscn)
+2. Move player to a ladder and trigger it
+3. Should transition to floor 1 (map_2.tscn)
+4. Move to another ladder on floor 1
+5. Should transition to floor 2 (map_3.tscn)
+
+## Expected Results
+- Floor 0 loads successfully with rocks
+- Ladder trigger → Floor 1 loads with new rocks
+- Second ladder trigger → Floor 2 loads with new rocks
+- No "map is null" errors
+- Smooth transitions with fade effects
+
+## Current Status
+✅ Floor 0 loading: WORKING
+✅ Rock spawning: WORKING
+✅ Ladder detection: WORKING
+❌ Testing ladder transitions... (need to test in editor)
+
+## Debug Output So Far
+```
+Loaded map for floor 0
+Spawned 5 rocks
+Player start position set to: (184.0, 56.0)
+Rock destroyed at: (168.0, 56.0) type: diamond_rock
+Gem rock destroyed, spawning handled by gem rock script
+Rock destroyed at: (168.0, 8.0) type: diamond_rock
+Gem rock destroyed, spawning handled by gem rock script
+```
+
+The fix successfully resolved the "Cannot call method 'get_used_cells' on a null value" error!

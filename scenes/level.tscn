@@ -1,14 +1,12 @@
 [gd_scene format=3 uid="uid://dvimrwetk18e0"]
 
 [ext_resource type="PackedScene" uid="uid://cion5uuq4bmxv" path="res://scenes/player.tscn" id="1_dyaho"]
-[ext_resource type="PackedScene" uid="uid://ddbu6sydwfrj8" path="res://scenes/rock.tscn" id="2_ckblc"]
-[ext_resource type="PackedScene" uid="uid://btsonlu2h4ctk" path="res://scenes/map.tscn" id="2_mx8sn"]
 [ext_resource type="Script" uid="uid://bim5lau8t5u4b" path="res://assets/scripts/level.gd" id="3_level"]
 
 [node name="Level" type="Node2D" unique_id=456164857]
 script = ExtResource("3_level")
 
-[node name="UILayer" type="CanvasLayer" parent="."]
+[node name="UILayer" type="CanvasLayer" parent="." unique_id=634841932]
 
 [node name="ScoreLabel" type="Label" parent="UILayer" unique_id=123456789]
 offset_left = 4.0
@@ -17,17 +15,15 @@ offset_right = 80.0
 offset_bottom = 20.0
 text = "Score: 0"
 
-[node name="FadeRect" type="ColorRect" parent="."]
+[node name="FadeRect" type="ColorRect" parent="." unique_id=919772576]
 visible = false
-offset_left = 0.0
-offset_top = 0.0
 offset_right = 320.0
 offset_bottom = 180.0
 color = Color(0, 0, 0, 1)
 
-[node name="Map" parent="." unique_id=1761456509 instance=ExtResource("2_mx8sn")]
+[node name="MapContainer" type="Node2D" parent="." unique_id=1247706352]
 
-[node name="YSort" type="Node2D" parent="."]
+[node name="YSort" type="Node2D" parent="." unique_id=1736055587]
 
 [node name="Player" parent="YSort" unique_id=1413802782 instance=ExtResource("1_dyaho")]
 position = Vector2(41, 56)
