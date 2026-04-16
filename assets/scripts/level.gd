@@ -21,7 +21,8 @@ var ore_scenes = {
 	"amethyst": preload("res://scenes/amethyst.tscn")
 }
 
-var ore_names = ["gold", "iron", "tin", "diamond", "amethyst"]
+var ore_names = ["gold", "iron", "tin", "coal", "solar"]  # Stone rocks drop these
+var gem_ore_names = ["diamond", "amethyst"]  # Only from gem rocks
 var rocks_spawned = 0
 var ore_drop_chance: float = 0.7  # 70% chance to spawn ore
 var gem_chance: float = 0.5  # 50% chance to spawn gem rock, 50% for regular rock
@@ -46,7 +47,7 @@ var is_transitioning: bool = false
 func _ready():
 	_load_map_for_floor(current_floor)
 	_clear_all_rocks()
-	_spawn_rocks(5)
+	_spawn_rocks(5 + (current_floor * 3))
 	_set_player_start_position()
 	# Reorder player to be last in YSort so player renders in front when Y is equal
 	var player_ref = $YSort/Player
@@ -104,7 +105,14 @@ func _clear_all_rocks():
 	for rock in rocks_to_remove:
 		rock.queue_free()
 	rocks_spawned = 0
-	print("Cleared ", rocks_to_remove.size(), " rocks")
+	print("Cleared ", rocks_to_remove.size(), " rocks, remaining in YSort: ", _count_rocks_in_ysort())
+
+func _count_rocks_in_ysort() -> int:
+	var count = 0
+	for child in $YSort.get_children():
+		if child.name.begins_with("Rock"):
+			count += 1
+	return count
 
 func _clear_all_ladders():
 	var ladders_to_remove = []
@@ -140,7 +148,9 @@ func _spawn_rocks(count: int):
 			break
 		var cell_center = map.map_to_local(cell)
 		var rock_scene_to_use
-		if randf() < gem_chance:
+		# Scale gem chance by floor: base 50% + 15% per floor
+		var floor_gem_chance = gem_chance + (current_floor * 0.15)
+		if randf() < floor_gem_chance:
 			# Choose between amethyst and diamond rock
 			rock_scene_to_use = amethyst_rock_scene if randf() < 0.5 else diamond_rock_scene
 		else:
@@ -155,13 +165,15 @@ func _spawn_rocks(count: int):
 	print("Spawned ", rocks_spawned, " rocks")
 
 func _on_Rock_rock_destroyed(spawn_pos: Vector2, type: String = "stone", rock: Node = null):
-	print("Rock destroyed at: ", spawn_pos, " type: ", type)
+	print("SIGNAL RECEIVED: Rock destroyed at: ", spawn_pos, " type: ", type, " rock: ", rock)
 	last_rock_pos = spawn_pos
 
 	# Check if this was the last rock and ladder hasn't spawned
 	rocks_spawned -= 1
+	print("rocks_spawned: ", rocks_spawned, " after decrement, ladder_spawned: ", ladder_spawned)
 	if rocks_spawned <= 0 and not ladder_spawned:
 		# Force spawn ladder at last rock position
+		print("FORCE SPAWNING LADDER - last rock destroyed")
 		_spawn_ladder(last_rock_pos)
 		if rock:
 			rock.skip_gem_spawn = true
@@ -174,9 +186,11 @@ func _on_Rock_rock_destroyed(spawn_pos: Vector2, type: String = "stone", rock: N
 			rock.skip_gem_spawn = true
 		return
 
-	# Only spawn ore if ladder didn't spawn
+		# Only spawn ore if ladder didn't spawn
 	if type == "stone":
-		if randf() <= ore_drop_chance:
+		# Scale ore drop chance by floor: base 70% + 10% per floor
+		var floor_ore_chance = ore_drop_chance + (current_floor * 0.10)
+		if randf() <= floor_ore_chance:
 			spawn_random_ore(spawn_pos)
 		else:
 			print("No ore dropped")
@@ -269,7 +283,7 @@ func change_floor(direction: int):
 	ladder_spawned = false
 
 	# Spawn rocks for new map
-	_spawn_rocks(5)
+	_spawn_rocks(5 + (current_floor * 3))
 
 	# Set player start position for new map
 	_set_player_start_position()

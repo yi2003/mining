@@ -16,6 +16,7 @@ func take_damage():
 	_play_flash_effect()
 	if health <= 0:
 		is_dying = true
+		print("DIAMOND ROCK: emitting rock_destroyed with type=", rock_type, " self=", self)
 		emit_signal("rock_destroyed", global_position, rock_type, self)
 		if skip_gem_spawn:
 			await get_tree().create_timer(0.15).timeout
