@@ -11,6 +11,7 @@ var map_scenes = [
 	preload("res://scenes/map_3.tscn")
 ]
 @onready var score_label = $UILayer/ScoreLabel
+@onready var depth_label = $HUD/ColorRect/Label
 var ore_scenes = {
 	"coal": preload("res://scenes/coal.tscn"),
 	"gold": preload("res://scenes/gold.tscn"),
@@ -49,6 +50,7 @@ func _ready():
 	_clear_all_rocks()
 	_spawn_rocks(5 + (current_floor * 3))
 	_set_player_start_position()
+	_update_depth_label()
 	# Reorder player to be last in YSort so player renders in front when Y is equal
 	var player_ref = $YSort/Player
 	$YSort.remove_child(player_ref)
@@ -238,6 +240,9 @@ func _on_Ore_collected(points: int):
 func _update_score_label():
 	score_label.text = "Score: " + str(GameState.score)
 
+func _update_depth_label():
+	depth_label.text = "Depth: " + str(current_floor + 1)
+
 func change_floor(direction: int):
 	if is_transitioning:
 		return
@@ -287,6 +292,7 @@ func change_floor(direction: int):
 
 	# Set player start position for new map
 	_set_player_start_position()
+	_update_depth_label()
 
 
 	# Wait a moment
