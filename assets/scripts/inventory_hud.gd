@@ -1,17 +1,17 @@
 extends CanvasLayer
 
 @onready var slot_icons: Array = [
-	$Panel/Slots/Slot0/Contents/Icon0,
-	$Panel/Slots/Slot1/Contents/Icon1,
-	$Panel/Slots/Slot2/Contents/Icon2,
-	$Panel/Slots/Slot3/Contents/Icon3
+	$Panel/Slots/Slot0/Icon0,
+	$Panel/Slots/Slot1/Icon1,
+	$Panel/Slots/Slot2/Icon2,
+	$Panel/Slots/Slot3/Icon3
 ]
 
 @onready var slot_labels: Array = [
-	$Panel/Slots/Slot0/Contents/Label0,
-	$Panel/Slots/Slot1/Contents/Label1,
-	$Panel/Slots/Slot2/Contents/Label2,
-	$Panel/Slots/Slot3/Contents/Label3
+	$Panel/Slots/Slot0/Label0,
+	$Panel/Slots/Slot1/Label1,
+	$Panel/Slots/Slot2/Label2,
+	$Panel/Slots/Slot3/Label3
 ]
 
 const ORE_TEXTURES = {
