@@ -188,7 +188,7 @@ func _on_Rock_rock_destroyed(spawn_pos: Vector2, type: String = "stone", rock: N
 			rock.skip_gem_spawn = true
 		return
 
-		# Only spawn ore if ladder didn't spawn
+	# Only spawn ore if ladder didn't spawn
 	if type == "stone":
 		# Scale ore drop chance by floor: base 70% + 10% per floor
 		var floor_ore_chance = ore_drop_chance + (current_floor * 0.10)

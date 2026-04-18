@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://btsonlu2h4ctk" path="res://scenes/map.tscn" id="2_w8frs"]
 [ext_resource type="Script" uid="uid://bim5lau8t5u4b" path="res://assets/scripts/level.gd" id="3_level"]
 [ext_resource type="PackedScene" uid="uid://wtq1q7l7cjpg" path="res://scenes/hud.tscn" id="4_mx8sn"]
+[ext_resource type="PackedScene" uid="uid://dinventohueba" path="res://scenes/inventory_hud.tscn" id="5_invhud"]
 
 [node name="Level" type="Node2D" unique_id=456164857]
 script = ExtResource("3_level")
@@ -33,3 +34,5 @@ color = Color(0, 0, 0, 1)
 position = Vector2(41, 56)
 
 [node name="HUD" parent="." unique_id=454040192 instance=ExtResource("4_mx8sn")]
+
+[node name="InventoryHUD" parent="." unique_id=555555555 instance=ExtResource("5_invhud")]
