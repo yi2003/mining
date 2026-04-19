@@ -1,0 +1,65 @@
+[gd_scene format=3 uid="uid://summary_screen"]
+
+[ext_resource type="Script" path="res://assets/scripts/summary_screen.gd" id="1_summary"]
+
+[node name="SummaryScreen" type="CanvasLayer"]
+layer = 20
+script = ExtResource("1_summary")
+
+[node name="Overlay" type="ColorRect" parent="."]
+offset_right = 320.0
+offset_bottom = 180.0
+color = Color(0, 0, 0, 0.85)
+
+[node name="Panel" type="Panel" parent="."]
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 300.0
+offset_bottom = 160.0
+
+[node name="VBox" type="VBoxContainer" parent="Panel"]
+layout_mode = 2
+theme_override_constants/separation = 2
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 6.0
+offset_top = 6.0
+offset_right = -6.0
+offset_bottom = -6.0
+
+[node name="TableContainer" type="VBoxContainer" parent="Panel/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 1
+
+[node name="Spacer" type="Control" parent="Panel/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 6)
+
+[node name="TotalLabel" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+text = "Grand Total: 0"
+horizontal_alignment = 1
+
+[node name="Spacer2" type="Control" parent="Panel/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 4)
+
+[node name="Buttons" type="HBoxContainer" parent="Panel/VBox"]
+layout_mode = 2
+alignment = 1
+
+[node name="RestartButton" type="Button" parent="Panel/VBox/Buttons"]
+layout_mode = 2
+text = "Restart"
+
+[node name="Spacer3" type="Control" parent="Panel/VBox/Buttons"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+
+[node name="ExitButton" type="Button" parent="Panel/VBox/Buttons"]
+layout_mode = 2
+text = "Exit Game"
+
+[connection signal="pressed" from="Panel/VBox/Buttons/RestartButton" to="." method="_on_restart_pressed"]
+[connection signal="pressed" from="Panel/VBox/Buttons/ExitButton" to="." method="_on_exit_pressed"]

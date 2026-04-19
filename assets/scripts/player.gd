@@ -11,6 +11,7 @@ var is_axe_swinging = false
 var is_climbing: bool = false
 var current_ladder: Node = null
 var is_transitioning: bool = false
+var can_move: bool = true
 
 # Original hitbox position for reference
 var original_hitbox_pos = Vector2(5, -1)
@@ -21,7 +22,7 @@ func _ready():
 	set_process_input(true)
 
 func _unhandled_input(event):
-	if event.is_action_pressed("attack") and not is_axe_swinging:
+	if event.is_action_pressed("attack") and not is_axe_swinging and can_move:
 		is_axe_swinging = true
 		_play_axe_animation()
 
@@ -75,13 +76,18 @@ func _play_axe_animation():
 
 func _physics_process(_delta):
 	# Check for axe swing via input as fallback
-	if Input.is_action_just_pressed("attack") and not is_axe_swinging:
+	if Input.is_action_just_pressed("attack") and not is_axe_swinging and can_move:
 		is_axe_swinging = true
 		_play_axe_animation()
 
 	# Climbing mode - handle separately
 	if is_climbing:
 		_handle_climbing_input()
+		return
+
+	# Block all input when can_move is false
+	if not can_move:
+		velocity = Vector2.ZERO
 		return
 
 	# Get input direction
@@ -133,11 +139,13 @@ func _physics_process(_delta):
 func _handle_climbing_input():
 	var horizontal = Input.get_axis("ui_left", "ui_right")
 
-	# Exit climbing on horizontal input
-	if abs(horizontal) > 0:
+	# Exit climbing on horizontal input or when movement is locked
+	if abs(horizontal) > 0 or not can_move:
 		_exit_climbing()
 
 func enter_climbing(ladder):
+	if not can_move:
+		return
 	is_climbing = true
 	current_ladder = ladder
 	velocity = Vector2.ZERO

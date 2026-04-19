@@ -43,6 +43,8 @@ var world_offset_y: int = 0
 var max_floor: int = 3
 var is_transitioning: bool = false
 
+@onready var summary_scene = preload("res://scenes/summary_screen.tscn")
+
 @onready var fade_rect = $FadeRect
 @onready var world_container = $YSort
 @onready var player = $YSort/Player
@@ -337,6 +339,16 @@ func change_floor(direction: int):
 	print("Changed to floor ", current_floor)
 
 func _on_ladder_entered(ladder):
+	if ladder == exit_ladder_instance:
+		player.can_move = false
+		player.is_climbing = false
+		player.current_ladder = null
+		player.velocity = Vector2.ZERO
+		var summary = summary_scene.instantiate()
+		add_child(summary)
+		summary.show_summary()
+		return
+
 	player.enter_climbing(ladder)
 	print("Player entered ladder on floor ", ladder.floor_number)
 	# Move to next floor when player enters ladder

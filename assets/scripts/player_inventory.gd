@@ -29,6 +29,16 @@ class OreSlot:
 			return true
 		return false
 
+var ore_values = {
+	OreType.IRON: 10,
+	OreType.GOLD: 50,
+	OreType.COAL: 5,
+	OreType.SOLAR: 75,
+	OreType.DIAMOND: 100,
+	OreType.AMETHYST: 80,
+	OreType.TIN: 8,
+}
+
 var slots: Array = []
 
 func _ready():
@@ -72,3 +82,17 @@ func _ore_name(type: OreType) -> String:
 		OreType.AMETHYST: return "Amethyst"
 		OreType.TIN: return "Tin"
 	return "Unknown"
+
+func get_ore_summary() -> Dictionary:
+	var summary = {}
+	for slot in slots:
+		if slot.locked and slot.count > 0:
+			if not summary.has(slot.ore_type):
+				summary[slot.ore_type] = 0
+			summary[slot.ore_type] += slot.count
+	return summary
+
+func get_ore_value(type: OreType) -> int:
+	if ore_values.has(type):
+		return ore_values[type]
+	return 0
