@@ -29,8 +29,10 @@ var ore_drop_chance: float = 0.7  # 70% chance to spawn ore
 var gem_chance: float = 0.5  # 50% chance to spawn gem rock, 50% for regular rock
 
 # Ladder spawning
+var exit_ladder_scene = preload("res://scenes/ExitLadder.tscn")
 var ladder_scene = preload("res://scenes/ladder.tscn")
 var ladder_spawned: bool = false
+var exit_ladder_instance: Node2D = null
 var last_rock_pos: Vector2 = Vector2.ZERO
 var ladder_spawn_chance: float = 0.3  # 30% chance to spawn ladder
 
@@ -58,6 +60,9 @@ func _ready():
 
 	# Initialize world container position for floor offset
 	world_container.position.y = world_offset_y
+
+	# Spawn exit ladder above player at level start
+	_spawn_exit_ladder()
 
 func _load_map_for_floor(floor_num: int):
 	# Clear all children from MapContainer (including initial scene map)
@@ -174,16 +179,16 @@ func _on_Rock_rock_destroyed(spawn_pos: Vector2, type: String = "stone", rock: N
 	rocks_spawned -= 1
 	print("rocks_spawned: ", rocks_spawned, " after decrement, ladder_spawned: ", ladder_spawned)
 	if rocks_spawned <= 0 and not ladder_spawned:
-		# Force spawn ladder at last rock position
-		print("FORCE SPAWNING LADDER - last rock destroyed")
-		_spawn_ladder(last_rock_pos)
+		# Force spawn down ladder at last rock position
+		print("FORCE SPAWNING DOWN LADDER - last rock destroyed")
+		_spawn_down_ladder(last_rock_pos)
 		if rock:
 			rock.skip_gem_spawn = true
 		return
 
-	# Random ladder spawn chance
+	# Random down ladder spawn chance
 	if not ladder_spawned and randf() <= ladder_spawn_chance:
-		_spawn_ladder(spawn_pos)
+		_spawn_down_ladder(spawn_pos)
 		if rock:
 			rock.skip_gem_spawn = true
 		return
@@ -200,17 +205,40 @@ func _on_Rock_rock_destroyed(spawn_pos: Vector2, type: String = "stone", rock: N
 	elif type == "gem" or type == "amethyst_rock" or type == "diamond_rock":
 		print("Gem rock destroyed, spawning handled by gem rock script")
 
-func _spawn_ladder(spawn_pos: Vector2):
-	print("Spawning ladder at: ", spawn_pos)
-	var ladder = ladder_scene.instantiate()
-	ladder.position = spawn_pos
-	ladder_spawned = true
-	$YSort.add_child(ladder)
-	ladder.player_entered_ladder.connect(_on_ladder_entered)
-	ladder.player_exited_ladder.connect(_on_ladder_exited)
+func _spawn_exit_ladder():
+	var player_start = _get_player_start_position()
+	var spawn_pos = player_start if player_start != Vector2.ZERO else last_rock_pos
+	# Position exit ladder slightly above the starting marker
+	spawn_pos = Vector2(spawn_pos.x, spawn_pos.y - 20)
+	print("Spawning exit ladder at: ", spawn_pos, " (PlayerStart: ", player_start, ")")
+	var exit_ladder = exit_ladder_scene.instantiate()
+	exit_ladder.position = spawn_pos
+	exit_ladder_instance = exit_ladder
+	$YSort.add_child(exit_ladder)
+	exit_ladder.player_entered_ladder.connect(_on_ladder_entered)
+	exit_ladder.player_exited_ladder.connect(_on_ladder_exited)
 	# Keep player on top of YSort
 	$YSort.remove_child(player)
 	$YSort.add_child(player)
+
+func _spawn_down_ladder(spawn_pos: Vector2):
+	print("Spawning down ladder at: ", spawn_pos)
+	var down_ladder = ladder_scene.instantiate()
+	down_ladder.position = spawn_pos
+	ladder_spawned = true
+	$YSort.add_child(down_ladder)
+	down_ladder.player_entered_ladder.connect(_on_ladder_entered)
+	down_ladder.player_exited_ladder.connect(_on_ladder_exited)
+	# Keep player on top of YSort
+	$YSort.remove_child(player)
+	$YSort.add_child(player)
+
+func _get_player_start_position() -> Vector2:
+	if current_map_instance:
+		for child in current_map_instance.get_children():
+			if child.name == "PlayerStart":
+				return child.position
+	return Vector2.ZERO
 
 func spawn_random_ore(spawn_pos: Vector2):
 	var ore_name = ore_names[randi() % ore_names.size()]

@@ -1,0 +1,21 @@
+[gd_scene format=4 uid="uid://bv2n4y035o5yx"]
+
+[ext_resource type="Texture2D" uid="uid://dxsgpuk2hfs73" path="res://assets/images/tileset/ladder.png" id="1_dmigs"]
+[ext_resource type="Script" path="res://assets/scripts/exit_ladder.gd" id="1_gdscript"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_62p1v"]
+atlas = ExtResource("1_dmigs")
+region = Rect2(16, 8, 16, 40)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_exit"]
+size = Vector2(16, 10)
+
+[node name="ExitLadder" type="Area2D" unique_id=1597840672]
+script = ExtResource("1_gdscript")
+
+[node name="exit_sprite" type="Sprite2D" parent="." unique_id=1540372489]
+position = Vector2(0, -10)
+texture = SubResource("AtlasTexture_62p1v")
+
+[node name="exit_collision" type="CollisionShape2D" parent="." unique_id=912906001]
+shape = SubResource("RectangleShape2D_exit")
