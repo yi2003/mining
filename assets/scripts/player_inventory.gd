@@ -72,6 +72,13 @@ func try_add_ore(ore_type: OreType) -> bool:
 	print("Cannot add ", _ore_name(ore_type), ". Inventory full or no matching slot available.")
 	return false
 
+func clear_all():
+	for slot in slots:
+		slot.locked = false
+		slot.count = 0
+		slot.ore_type = OreType.IRON
+	inventory_changed.emit()
+
 func _ore_name(type: OreType) -> String:
 	match type:
 		OreType.IRON: return "Iron"

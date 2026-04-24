@@ -338,14 +338,20 @@ func change_floor(direction: int):
 	player.is_transitioning = false
 	print("Changed to floor ", current_floor)
 
+var is_summary_active: bool = false
+
 func _on_ladder_entered(ladder):
 	if ladder == exit_ladder_instance:
+		if is_summary_active:
+			return
+		is_summary_active = true
 		player.can_move = false
 		player.is_climbing = false
 		player.current_ladder = null
 		player.velocity = Vector2.ZERO
 		var summary = summary_scene.instantiate()
 		add_child(summary)
+		summary.continue_game.connect(_on_summary_continue)
 		summary.show_summary()
 		return
 
@@ -354,6 +360,10 @@ func _on_ladder_entered(ladder):
 	# Move to next floor when player enters ladder
 	if current_floor < max_floor:
 		change_floor(1)
+
+func _on_summary_continue():
+	is_summary_active = false
+	player.can_move = true
 
 func _on_ladder_exited():
 	player._exit_climbing()

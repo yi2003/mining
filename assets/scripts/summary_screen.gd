@@ -1,7 +1,10 @@
 extends CanvasLayer
 
+signal continue_game
+
 @onready var table_container = $Panel/VBox/TableContainer
 @onready var total_label = $Panel/VBox/TotalLabel
+@onready var earnings_label = $Panel/VBox/EarningsLabel
 
 const ORE_TEXTURES = {
 	PlayerInventory.OreType.IRON: preload("res://assets/images/ores/iron.png"),
@@ -46,34 +49,39 @@ func show_summary():
 		grand_total += total
 		_create_ore_row(ore_type, qty, value, total)
 
+	# Accumulate total earnings and clear inventory
+	GameState.add_earnings(grand_total)
+	PlayerInventory.clear_all()
+
 	total_label.text = "Grand Total: " + str(grand_total)
+	earnings_label.text = "Total Earnings: " + str(GameState.total_earnings)
 
 func _create_header_row():
 	var row = HBoxContainer.new()
-	row.custom_minimum_size = Vector2(0, 14)
+	row.custom_minimum_size = Vector2(0, 10)
 
 	var spacer = Control.new()
-	spacer.custom_minimum_size = Vector2(18, 0)
+	spacer.custom_minimum_size = Vector2(14, 0)
 	row.add_child(spacer)
 
-	var label_qty = _label_pad_left("Qty", 8)
+	var label_qty = _label_pad_left("Qty", 6)
 	row.add_child(label_qty)
 
-	var label_val = _label_pad_left("Value", 10)
+	var label_val = _label_pad_left("Value", 8)
 	row.add_child(label_val)
 
-	var label_total = _label_pad_left("Total", 10)
+	var label_total = _label_pad_left("Total", 8)
 	row.add_child(label_total)
 
 	table_container.add_child(row)
 
 func _create_ore_row(ore_type, qty: int, value: int, total: int):
 	var row = HBoxContainer.new()
-	row.custom_minimum_size = Vector2(0, 14)
+	row.custom_minimum_size = Vector2(0, 10)
 
 	# Texture icon
 	var icon = TextureRect.new()
-	icon.custom_minimum_size = Vector2(12, 12)
+	icon.custom_minimum_size = Vector2(8, 8)
 	icon.stretch_mode = TextureRect.STRETCH_KEEP
 	var base_texture = ORE_TEXTURES.get(ore_type)
 	var region = ORE_REGIONS.get(ore_type, Rect2(0, 0, 16, 16))
@@ -101,17 +109,25 @@ func _create_ore_row(ore_type, qty: int, value: int, total: int):
 func _label(text: String) -> Label:
 	var l = Label.new()
 	l.text = text
-	l.custom_minimum_size = Vector2(0, 14)
+	l.custom_minimum_size = Vector2(0, 10)
+	l.add_theme_font_size_override("font_size", 9)
 	return l
 
 func _label_pad_left(text: String, width: int) -> Label:
 	var l = Label.new()
-	l.custom_minimum_size = Vector2(0, 14)
+	l.custom_minimum_size = Vector2(0, 10)
+	l.add_theme_font_size_override("font_size", 9)
 	var result = text
 	while result.length() < width - text.length():
 		result = " " + result
 	l.text = result
 	return l
+
+func _on_continue_pressed():
+	visible = false
+	continue_game.emit()
+	get_tree().paused = false
+	queue_free()
 
 func _on_exit_pressed():
 	get_tree().quit()
