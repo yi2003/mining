@@ -1,7 +1,10 @@
 extends Node
 
+const MAX_OXYGEN: float = 100.0
+
 var score: int = 0
 var total_earnings: int = 0
+var oxygen: float = MAX_OXYGEN
 
 func add_score(points: int) -> void:
 	score += points
@@ -11,3 +14,6 @@ func add_earnings(value: int) -> void:
 
 func reset_score() -> void:
 	score = 0
+
+func reset_oxygen() -> void:
+	oxygen = MAX_OXYGEN

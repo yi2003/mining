@@ -49,12 +49,20 @@ var is_transitioning: bool = false
 @onready var world_container = $YSort
 @onready var player = $YSort/Player
 
+# Oxygen system
+const OXYGEN_DRAIN_RATE: float = 1.0
+@onready var oxygen_bar_bg = $HUD/OxygenBarBg
+@onready var oxygen_fill = $HUD/OxygenBarBg/OxygenFill
+@onready var oxygen_label = $HUD/OxygenBarBg/OxygenLabel
+
 func _ready():
 	_load_map_for_floor(current_floor)
 	_clear_all_rocks()
 	_spawn_rocks(5 + (current_floor * 3))
 	_set_player_start_position()
 	_update_depth_label()
+	GameState.reset_oxygen()
+	_update_oxygen_ui()
 	# Reorder player to be last in YSort so player renders in front when Y is equal
 	var player_ref = $YSort/Player
 	$YSort.remove_child(player_ref)
@@ -273,6 +281,17 @@ func _update_score_label():
 func _update_depth_label():
 	depth_label.text = "Depth: " + str(current_floor + 1)
 
+func _update_oxygen_ui():
+	var ratio = GameState.oxygen / GameState.MAX_OXYGEN
+	oxygen_fill.size.x = 144 * ratio
+	if GameState.oxygen > 50:
+		oxygen_fill.color = Color(0, 1, 0)  # green
+	elif GameState.oxygen > 25:
+		oxygen_fill.color = Color(1, 0.55, 0)  # dark_orange
+	else:
+		oxygen_fill.color = Color(1, 0, 0)  # red
+	oxygen_label.text = "Oxygen: " + str(ceili(GameState.oxygen))
+
 func change_floor(direction: int):
 	if is_transitioning:
 		return
@@ -349,6 +368,7 @@ func _on_ladder_entered(ladder):
 		player.is_climbing = false
 		player.current_ladder = null
 		player.velocity = Vector2.ZERO
+		oxygen_bar_bg.visible = false
 		var summary = summary_scene.instantiate()
 		add_child(summary)
 		summary.continue_game.connect(_on_summary_continue)
@@ -364,9 +384,18 @@ func _on_ladder_entered(ladder):
 func _on_summary_continue():
 	is_summary_active = false
 	player.can_move = true
+	GameState.reset_oxygen()
+	oxygen_bar_bg.visible = true
+	_update_oxygen_ui()
 
 func _on_ladder_exited():
 	player._exit_climbing()
+
+func _process(delta):
+	if not get_tree().paused and not is_summary_active and not is_transitioning:
+		if GameState.oxygen > 0:
+			GameState.oxygen = max(0, GameState.oxygen - delta * OXYGEN_DRAIN_RATE)
+			_update_oxygen_ui()
 
 func _physics_process(_delta):
 	if player.is_climbing and not is_transitioning:

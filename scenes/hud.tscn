@@ -29,3 +29,27 @@ offset_bottom = 11.5
 grow_horizontal = 2
 grow_vertical = 2
 text = "Depth: 1"
+
+[node name="OxygenBarBg" type="ColorRect" parent="." unique_id=173229513]
+offset_left = 170.0
+offset_top = 4.0
+offset_right = 316.0
+offset_bottom = 20.0
+mouse_filter = 2
+color = Color(0.2, 0.2, 0.2, 0.85)
+
+[node name="OxygenFill" type="ColorRect" parent="OxygenBarBg" unique_id=247955361]
+layout_mode = 0
+offset_left = 1.0
+offset_top = 1.0
+offset_right = 145.0
+offset_bottom = 22.0
+color = Color(0, 1, 0, 1)
+
+[node name="OxygenLabel" type="Label" parent="OxygenBarBg" unique_id=2103081996]
+layout_mode = 0
+offset_left = 4.0
+offset_right = 142.0
+offset_bottom = 14.0
+text = "Oxygen: 100"
+vertical_alignment = 1
