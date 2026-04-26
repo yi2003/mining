@@ -6,12 +6,15 @@ const SPEED = 100.0
 @onready var hitbox = $Hitbox
 @onready var hitbox_shape = $Hitbox/CollisionShape2D
 
-var facing_direction = "down"  # Track facing: "up", "down", "left", "right"
+var facing_direction = "down"
 var is_axe_swinging = false
 var is_climbing: bool = false
 var current_ladder: Node = null
 var is_transitioning: bool = false
 var can_move: bool = true
+var is_dying: bool = false
+
+signal death_animation_finished
 
 # Original hitbox position for reference
 var original_hitbox_pos = Vector2(5, -1)
@@ -45,7 +48,7 @@ func _play_axe_animation():
 		"left":
 			animated_sprite.play("axe_right")
 			animated_sprite.flip_h = true
-			# Hitbox to the left — mirror the right attack via scale.x = -1
+			# Hitbox to the left, mirror the right attack via scale.x = -1
 			hitbox.position = Vector2(-5, -1)
 			hitbox_shape.position = Vector2(4.5, 5)
 			hitbox.scale.x = -1
@@ -153,3 +156,11 @@ func enter_climbing(ladder):
 func _exit_climbing():
 	is_climbing = false
 	current_ladder = null
+
+func play_death():
+	is_dying = true
+	can_move = false
+	velocity = Vector2.ZERO
+	animated_sprite.play("die")
+	await animated_sprite.animation_finished
+	death_animation_finished.emit()

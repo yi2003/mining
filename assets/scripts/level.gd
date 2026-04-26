@@ -333,7 +333,8 @@ func change_floor(direction: int):
 
 	_clear_all_ladders()
 
-	# Reset ladder flag for new floor
+	# Reset flags for new floor
+	rocks_spawned = 0
 	ladder_spawned = false
 
 	# Spawn rocks for new map
@@ -358,6 +359,7 @@ func change_floor(direction: int):
 	print("Changed to floor ", current_floor)
 
 var is_summary_active: bool = false
+var is_player_dying: bool = false
 
 func _on_ladder_entered(ladder):
 	if ladder == exit_ladder_instance:
@@ -388,14 +390,29 @@ func _on_summary_continue():
 	oxygen_bar_bg.visible = true
 	_update_oxygen_ui()
 
+func _trigger_player_death():
+	is_player_dying = true
+	player.can_move = false
+	player.is_climbing = false
+	player.current_ladder = null
+	player.velocity = Vector2.ZERO
+	oxygen_bar_bg.visible = false
+	player.play_death()
+	await player.death_animation_finished
+	var summary = summary_scene.instantiate()
+	add_child(summary)
+	summary.show_summary(true)
+
 func _on_ladder_exited():
 	player._exit_climbing()
 
 func _process(delta):
-	if not get_tree().paused and not is_summary_active and not is_transitioning:
+	if not get_tree().paused and not is_summary_active and not is_transitioning and not is_player_dying:
 		if GameState.oxygen > 0:
 			GameState.oxygen = max(0, GameState.oxygen - delta * OXYGEN_DRAIN_RATE)
 			_update_oxygen_ui()
+			if GameState.oxygen <= 0:
+				_trigger_player_death()
 
 func _physics_process(_delta):
 	if player.is_climbing and not is_transitioning:

@@ -5,6 +5,7 @@ signal continue_game
 @onready var table_container = $Panel/VBox/TableContainer
 @onready var total_label = $Panel/VBox/TotalLabel
 @onready var earnings_label = $Panel/VBox/EarningsLabel
+@onready var continue_button = $Panel/VBox/Buttons/ContinueButton
 
 const ORE_TEXTURES = {
 	PlayerInventory.OreType.IRON: preload("res://assets/images/ores/iron.png"),
@@ -29,9 +30,11 @@ const ORE_REGIONS = {
 func _ready():
 	visible = false
 
-func show_summary():
+func show_summary(is_death: bool = false):
 	visible = true
 	get_tree().paused = true
+	if is_death:
+		continue_button.visible = false
 
 	# Clear old rows
 	for child in table_container.get_children():

@@ -212,7 +212,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_60g6h")
 }],
-"loop": true,
+"loop": false,
 "name": &"die",
 "speed": 5.0
 }, {
@@ -345,9 +345,7 @@ script = ExtResource("2_script")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=2057629261]
 sprite_frames = SubResource("SpriteFrames_u8vuu")
-animation = &"axe_right"
-frame = 1
-frame_progress = 1.0
+animation = &"die"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=892197776]
 position = Vector2(-0.5, 5)
@@ -355,7 +353,6 @@ shape = SubResource("RectangleShape2D_rwm0n")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=999999999]
 position_smoothing_enabled = true
-position_smoothing_speed = 5.0
 
 [node name="Hitbox" type="Area2D" parent="." unique_id=1110102169]
 position = Vector2(5, -1)
