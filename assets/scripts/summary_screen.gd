@@ -52,8 +52,9 @@ func show_summary(is_death: bool = false):
 		grand_total += total
 		_create_ore_row(ore_type, qty, value, total)
 
-	# Accumulate total earnings and clear inventory
-	GameState.add_earnings(grand_total)
+		# Accumulate total earnings and clear inventory (skip earnings on death)
+		if not is_death:
+			GameState.add_earnings(grand_total)
 	PlayerInventory.clear_all()
 
 	total_label.text = "Grand Total: " + str(grand_total)
