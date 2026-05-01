@@ -25,10 +25,10 @@ func _update_sprite_region():
 		var y_offset = 16  # Always use row 1 for gem rocks
 		sprite.region_rect = Rect2(x_offset, y_offset, 16, 16)
 
-func take_damage():
+func take_damage(amount: int = 1):
 	if health <= 0:
 		return
-	health -= 1
+	health -= amount
 	_play_flash_effect()
 	if health > 0:
 		_update_sprite_region()

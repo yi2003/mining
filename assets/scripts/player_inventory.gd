@@ -2,7 +2,7 @@ extends Node
 
 enum OreType { IRON, GOLD, COAL, SOLAR, DIAMOND, AMETHYST, TIN }
 
-const MAX_SLOTS = 4
+var max_slots: int = 4
 const MAX_STACK = 5
 
 class OreSlot:
@@ -42,11 +42,18 @@ var ore_values = {
 var slots: Array = []
 
 func _ready():
-	for i in MAX_SLOTS:
+	for i in max_slots:
 		var slot = OreSlot.new()
 		slots.append(slot)
 
 signal inventory_changed
+
+func resize_slots(new_size: int) -> void:
+	while slots.size() < new_size:
+		var slot = OreSlot.new()
+		slots.append(slot)
+	max_slots = new_size
+	inventory_changed.emit()
 
 func try_add_ore(ore_type: OreType) -> bool:
 	# First pass: try matching existing slot

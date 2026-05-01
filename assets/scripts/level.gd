@@ -44,6 +44,7 @@ var max_floor: int = 3
 var is_transitioning: bool = false
 
 @onready var summary_scene = preload("res://scenes/summary_screen.tscn")
+@onready var shop_scene = preload("res://scenes/shop_screen.tscn")
 
 @onready var fade_rect = $FadeRect
 @onready var world_container = $YSort
@@ -282,7 +283,7 @@ func _update_depth_label():
 	depth_label.text = "Depth: " + str(current_floor + 1)
 
 func _update_oxygen_ui():
-	var ratio = GameState.oxygen / GameState.MAX_OXYGEN
+	var ratio = GameState.oxygen / GameState.max_oxygen
 	oxygen_fill.size.x = 144 * ratio
 	if GameState.oxygen > 50:
 		oxygen_fill.color = Color(0, 1, 0)  # green
@@ -374,6 +375,7 @@ func _on_ladder_entered(ladder):
 		var summary = summary_scene.instantiate()
 		add_child(summary)
 		summary.continue_game.connect(_on_summary_continue)
+		summary.shop_opened.connect(_on_shop_opened)
 		summary.show_summary()
 		return
 
@@ -389,6 +391,15 @@ func _on_summary_continue():
 	GameState.reset_oxygen()
 	oxygen_bar_bg.visible = true
 	_update_oxygen_ui()
+
+func _on_shop_opened():
+	var shop = shop_scene.instantiate()
+	add_child(shop)
+	shop.shop_closed.connect(_on_shop_closed)
+	shop.show_shop()
+
+func _on_shop_closed():
+	pass
 
 func _trigger_player_death():
 	is_player_dying = true

@@ -10,10 +10,10 @@ signal rock_destroyed(position: Vector2, type: String, rock: Node)
 
 @onready var sprite = $Sprite2D
 
-func take_damage():
+func take_damage(amount: int = 1):
 	if health <= 0 or is_dying:
 		return
-	health -= 1
+	health -= amount
 	_play_flash_effect()
 	if health <= 0:
 		is_dying = true

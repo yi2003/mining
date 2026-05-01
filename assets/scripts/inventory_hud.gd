@@ -4,14 +4,18 @@ extends CanvasLayer
 	$Panel/Slots/Slot0/Icon0,
 	$Panel/Slots/Slot1/Icon1,
 	$Panel/Slots/Slot2/Icon2,
-	$Panel/Slots/Slot3/Icon3
+	$Panel/Slots/Slot3/Icon3,
+	$Panel/Slots/Slot4/Icon4,
+	$Panel/Slots/Slot5/Icon5,
 ]
 
 @onready var slot_labels: Array = [
 	$Panel/Slots/Slot0/Label0,
 	$Panel/Slots/Slot1/Label1,
 	$Panel/Slots/Slot2/Label2,
-	$Panel/Slots/Slot3/Label3
+	$Panel/Slots/Slot3/Label3,
+	$Panel/Slots/Slot4/Label4,
+	$Panel/Slots/Slot5/Label5,
 ]
 
 const ORE_TEXTURES = {
@@ -54,10 +58,15 @@ func UpdateInventoryUI():
 	_update_all()
 
 func _update_all():
-	for i in PlayerInventory.MAX_SLOTS:
+	for i in PlayerInventory.max_slots:
+		if i >= slot_icons.size():
+			break
 		var slot = PlayerInventory.slots[i]
 		var icon_node = slot_icons[i]
 		var label_node = slot_labels[i]
+
+		# Show the slot container
+		icon_node.get_parent().visible = true
 
 		if slot.locked:
 			var base_texture = ORE_TEXTURES.get(slot.ore_type)
@@ -73,3 +82,7 @@ func _update_all():
 			icon_node.texture = null
 			icon_node.visible = false
 			label_node.text = "x 0"
+
+	# Hide extra slots beyond max_slots
+	for i in range(PlayerInventory.max_slots, slot_icons.size()):
+		slot_icons[i].get_parent().visible = false

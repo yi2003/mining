@@ -67,7 +67,7 @@ func _play_axe_animation():
 	var bodies = hitbox.get_overlapping_bodies()
 	for body in bodies:
 		if body.has_method("take_damage"):
-			body.take_damage()
+			body.take_damage(GameState.get_pickaxe_damage())
 
 	# Wait for animation to finish before allowing another swing
 	await animated_sprite.animation_finished

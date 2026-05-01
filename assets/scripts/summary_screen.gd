@@ -1,11 +1,13 @@
 extends CanvasLayer
 
 signal continue_game
+signal shop_opened
 
 @onready var table_container = $Panel/VBox/TableContainer
 @onready var total_label = $Panel/VBox/TotalLabel
 @onready var earnings_label = $Panel/VBox/EarningsLabel
 @onready var continue_button = $Panel/VBox/Buttons/ContinueButton
+@onready var shop_button = $Panel/VBox/Buttons/ShopButton
 
 const ORE_TEXTURES = {
 	PlayerInventory.OreType.IRON: preload("res://assets/images/ores/iron.png"),
@@ -35,6 +37,7 @@ func show_summary(is_death: bool = false):
 	get_tree().paused = true
 	if is_death:
 		continue_button.visible = false
+		shop_button.visible = false
 
 	# Clear old rows
 	for child in table_container.get_children():
@@ -52,9 +55,9 @@ func show_summary(is_death: bool = false):
 		grand_total += total
 		_create_ore_row(ore_type, qty, value, total)
 
-		# Accumulate total earnings and clear inventory (skip earnings on death)
-		if not is_death:
-			GameState.add_earnings(grand_total)
+	# Accumulate total earnings and clear inventory (skip earnings on death)
+	if not is_death:
+		GameState.add_earnings(grand_total)
 	PlayerInventory.clear_all()
 
 	total_label.text = "Grand Total: " + str(grand_total)
@@ -126,6 +129,9 @@ func _label_pad_left(text: String, width: int) -> Label:
 		result = " " + result
 	l.text = result
 	return l
+
+func _on_shop_pressed():
+	shop_opened.emit()
 
 func _on_continue_pressed():
 	visible = false

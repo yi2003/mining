@@ -83,6 +83,17 @@ text = "Exit Game"
 theme_override_font_sizes/font_size = 11
 custom_minimum_size = Vector2(60, 16)
 
+[node name="Spacer5" type="Control" parent="Panel/VBox/Buttons"]
+custom_minimum_size = Vector2(6, 0)
+layout_mode = 2
+
+[node name="ShopButton" type="Button" parent="Panel/VBox/Buttons"]
+layout_mode = 2
+text = "Shop"
+theme_override_font_sizes/font_size = 11
+custom_minimum_size = Vector2(60, 16)
+
 [connection signal="pressed" from="Panel/VBox/Buttons/ContinueButton" to="." method="_on_continue_pressed"]
 [connection signal="pressed" from="Panel/VBox/Buttons/RestartButton" to="." method="_on_restart_pressed"]
 [connection signal="pressed" from="Panel/VBox/Buttons/ExitButton" to="." method="_on_exit_pressed"]
+[connection signal="pressed" from="Panel/VBox/Buttons/ShopButton" to="." method="_on_shop_pressed"]
